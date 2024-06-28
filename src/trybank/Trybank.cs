@@ -5,10 +5,6 @@ public class TrybankLib
     public bool Logged;
     public int loggedUser;
 
-    //0 -> Número da conta
-    //1 -> Agência
-    //2 -> Senha
-    //3 -> Saldo
     public int[,] Bank;
     public int registeredAccounts;
     private int maxAccounts = 50;
@@ -24,7 +20,22 @@ public class TrybankLib
     // 1. Construa a funcionalidade de cadastrar novas contas
     public void RegisterAccount(int number, int agency, int pass)
     {
-        throw new NotImplementedException();
+        bool alreadyExists = VerifyAccount(Bank, number, agency);
+
+        if (alreadyExists)
+        {
+            throw new ArgumentException("A conta já está sendo usada!");
+        }
+        //0 -> Número da conta
+        //1 -> Agência
+        //2 -> Senha
+        //3 -> Saldo
+        Bank[registeredAccounts, 0] = number;
+        Bank[registeredAccounts, 1] = agency;
+        Bank[registeredAccounts, 2] = pass;
+        Bank[registeredAccounts, 3] = 0;
+
+        registeredAccounts++;
     }
 
     // 2. Construa a funcionalidade de fazer Login
@@ -42,7 +53,7 @@ public class TrybankLib
     // 4. Construa a funcionalidade de checar o saldo
     public int CheckBalance()
     {
-        throw new NotImplementedException();   
+        throw new NotImplementedException();
     }
 
     // 5. Construa a funcionalidade de depositar dinheiro
@@ -63,5 +74,22 @@ public class TrybankLib
         throw new NotImplementedException();
     }
 
-   
+    // funções utilitárias
+    public bool VerifyAccount(int[,] db, int number, int agency)
+    {
+        if (registeredAccounts > 0)
+        {
+            for (int i = 0; i < registeredAccounts; i++)
+            {
+                if (db[i, 0] == number && db[i, 1] == agency)
+                {
+                    return true;
+                }
+
+            }
+        }
+
+        return false;
+
+    }
 }
