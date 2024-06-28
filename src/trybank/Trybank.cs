@@ -123,7 +123,20 @@ public class TrybankLib
     // 7. Construa a funcionalidade de transferir dinheiro entre contas
     public void Transfer(int destinationNumber, int destinationAgency, int value)
     {
-        throw new NotImplementedException();
+        if (!Logged)
+        {
+            throw new AccessViolationException("Usuário não está logado");
+        }
+        
+        int destinationAccount = FindAccountPosition(Bank, destinationNumber, destinationAgency);
+
+        if(destinationAccount == -99) {
+            throw new ArgumentException("Agência + Conta não encontrada");
+        }
+
+        Withdraw(value);
+        Bank[destinationAccount, 3] += value;
+
     }
 
     // funções utilitárias
@@ -141,5 +154,17 @@ public class TrybankLib
         }
 
         return false;
+    }
+
+    public int FindAccountPosition(int[,] db, int number, int agency)
+    {
+        for (int i = 0; i < registeredAccounts; i++)
+        {
+            if (db[i, 0] == number && db[i, 1] == agency)
+            {
+                return i;
+            }
+        }
+        return -99;
     }
 }
