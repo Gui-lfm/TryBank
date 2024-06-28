@@ -4,7 +4,6 @@ public class TrybankLib
 {
     public bool Logged;
     public int loggedUser;
-
     public int[,] Bank;
     public int registeredAccounts;
     private int maxAccounts = 50;
@@ -17,7 +16,6 @@ public class TrybankLib
         Bank = new int[maxAccounts, 4];
     }
 
-    // 1. Construa a funcionalidade de cadastrar novas contas
     public void RegisterAccount(int number, int agency, int pass)
     {
         bool alreadyExists = VerifyAccount(Bank, number, agency);
@@ -38,7 +36,6 @@ public class TrybankLib
         registeredAccounts++;
     }
 
-    // 2. Construa a funcionalidade de fazer Login
     public void Login(int number, int agency, int pass)
     {
         if (Logged)
@@ -64,7 +61,6 @@ public class TrybankLib
         }
     }
 
-    // 3. Construa a funcionalidade de fazer Logout
     public void Logout()
     {
         if (!Logged)
@@ -78,35 +74,23 @@ public class TrybankLib
         }
     }
 
-    // 4. Construa a funcionalidade de checar o saldo
     public int CheckBalance()
     {
-        if (!Logged)
-        {
-            throw new AccessViolationException("Usuário não está logado");
-        }
+        CheckIfLogged();
 
         return Bank[loggedUser, 3];
     }
 
-    // 5. Construa a funcionalidade de depositar dinheiro
     public void Deposit(int value)
     {
-        if (!Logged)
-        {
-            throw new AccessViolationException("Usuário não está logado");
-        }
+        CheckIfLogged();
 
         Bank[loggedUser, 3] += value;
     }
 
-    // 6. Construa a funcionalidade de sacar dinheiro
     public void Withdraw(int value)
     {
-        if (!Logged)
-        {
-            throw new AccessViolationException("Usuário não está logado");
-        }
+        CheckIfLogged();
 
         int userBalance = Bank[loggedUser, 3];
 
@@ -120,17 +104,14 @@ public class TrybankLib
         }
     }
 
-    // 7. Construa a funcionalidade de transferir dinheiro entre contas
     public void Transfer(int destinationNumber, int destinationAgency, int value)
     {
-        if (!Logged)
-        {
-            throw new AccessViolationException("Usuário não está logado");
-        }
-        
+        CheckIfLogged();
+
         int destinationAccount = FindAccountPosition(Bank, destinationNumber, destinationAgency);
 
-        if(destinationAccount == -99) {
+        if (destinationAccount == -99)
+        {
             throw new ArgumentException("Agência + Conta não encontrada");
         }
 
@@ -154,6 +135,14 @@ public class TrybankLib
         }
 
         return false;
+    }
+
+    public void CheckIfLogged()
+    {
+        if (!Logged)
+        {
+            throw new AccessViolationException("Usuário não está logado");
+        }
     }
 
     public int FindAccountPosition(int[,] db, int number, int agency)
